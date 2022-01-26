@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[])
 {
-	std::cout << "Hello World!" << std::endl;
-	std::cin.get();
+	Game g("oops", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0, 60);
+	g.loop();
 	return 0;
 }
