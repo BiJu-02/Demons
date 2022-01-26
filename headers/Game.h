@@ -16,8 +16,7 @@ public:
 	Game(const char *title, int x, int y, int w, int h, int sc, int fps);
 	void loop();
 	void handle_event();
-	void update();
-	void render();
+	void update_render();
 	void clean();
 };
 

@@ -39,8 +39,7 @@ void Game::loop()
 		frame_time = SDL_GetTicks64();
 
 		handle_event();
-		update();
-		render();
+		update_render();
 
 		frame_time = SDL_GetTicks64() - frame_time;
 
@@ -64,14 +63,12 @@ void Game::handle_event()
 	}
 }
 
-void Game::update()
-{
-
-}
-
-void Game::render()
+// update and render the obj_list in world
+void Game::update_render()
 {
 	SDL_RenderClear(ren);
+
+	
 
 	SDL_RenderPresent(ren);
 }
