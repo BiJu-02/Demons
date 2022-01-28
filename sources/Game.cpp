@@ -105,7 +105,9 @@ void Game::handle_game_screen3(int x, int y)
 void Game::handle_score_screen()
 {
 }
-
+void Game::show_score_screen()
+{
+}
 void Game::update()
 {
 	if (wrld.is_playing)
