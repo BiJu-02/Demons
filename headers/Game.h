@@ -69,6 +69,5 @@ public:
 	void handle_game_screen2(int x, int y);		// enemies spawning and following path, can interact with hero slot and hero position, can interact with play/pause butt
 	void handle_game_screen3(int x, int y);		// all game loop stops...can onli interact with play/pause butt
 	void handle_score_screen();	
-	void show_score_screen();
 };
 
