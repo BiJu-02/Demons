@@ -95,6 +95,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Dev\OOP\project2\headers;C:\Dev\OOP\project2\sdl_stuff\SDL2_ttf\include;C:\Dev\OOP\project2\sdl_stuff\SDL2_image\include;C:\Dev\OOP\project2\sdl_stuff\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Dev\OOP\project2\sdl_stuff\SDL2_ttf\lib\x86;C:\Dev\OOP\project2\sdl_stuff\SDL2_image\lib\x86;C:\Dev\OOP\project2\sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\Dev\OOP\project2\sources;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -138,6 +141,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Dev\OOP\project2\sdl_stuff\SDL2_ttf\lib\x86;C:\Dev\OOP\project2\sdl_stuff\SDL2_image\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
