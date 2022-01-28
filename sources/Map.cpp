@@ -1,23 +1,28 @@
 #include "Map.h"
+//#include <iostream>
 
 
 Map::Map(std::string map_name)
 {
 	std::string temp;
-	int n, j = 1;
-	std::string::size_type sz;
-	map_file_path = "assets/";
+	int n;
+	map_file_path = "assets/map_path/";
 	map_file_path.append(map_name);
-	map_file_path.append(".png");
+	map_file_path.append(".txt");
 	map_instruct_file.open(map_file_path);
-	getline(map_instruct_file, temp);
+	map_instruct_file >> temp;
+	map_instruct_file.ignore();
 	n = std::stoi(temp);
-	path_instruct = new int[2 * n + 1];
-	path_instruct[0] = n;
-	for (int i = 1; i < n; i++)
+	map_chk_pts = n;
+	path_instruct_x = new int[n];
+	path_instruct_y = new int[n];
+	for (int i = 0; i < n; i++)
 	{
-		getline(map_instruct_file, temp);
-		path_instruct[j++] = stoi(temp, &sz);
-		path_instruct[j++] = stoi(temp.substr(sz + 1));
+		map_instruct_file >> temp;
+		map_instruct_file.ignore();
+		path_instruct_x[i] = stoi(temp);
+		map_instruct_file >> temp;
+		map_instruct_file.ignore();
+		path_instruct_y[i] = stoi(temp);
 	}
 }

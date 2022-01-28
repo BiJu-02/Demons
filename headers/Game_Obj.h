@@ -14,16 +14,20 @@ class Game_Obj
 public:
 	bool is_active, is_moving;
 	int src_x, src_y, src_w, src_h;
-	int width, height;
+	int wscrn, hscrn;
 	int xscrn, yscrn;		// centre coordinate of sprite along its width on screen (drec.x + drec.w / 2, drec.y + height)
 	int x3d, y3d, z3d;		// 3d coordinates
+	int xi, yi, zi;
+	int x2d, y2d;
 	int xend, yend;			// destination coordinates if the object is moving
 	double vx, vy, vz, vxy, az;
-	double tm_cur, tm_prd, tm_qtm = 0.05;
+	double tm_prd, tm_cur = 0, tm_qtm = 0.05;
+	double ang;
 	std::string name;
 	int tex_id;
 
 	Game_Obj(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
+	virtual void update() {}
 };
 
 //facing:
@@ -47,8 +51,21 @@ public:
 	//double 
 
 	Character(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
-	virtual void update() {}
 	void set_dest(int x, int y, int face);
+};
+
+
+class Enemy : public Character
+{
+public:
+	int *path_x, *path_y;
+	int chk_pts, cur_chk_pt;
+	int kill_reward;
+	int temp_face;
+
+	Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int* pth_x, int* pth_y, int cp);
+	void update();
+	void set_path();
 };
 
 class Hero : public Character
@@ -57,13 +74,4 @@ public:
 	double heal_rate, revival_tm;
 
 	Hero(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
-};
-
-class Enemy : public Character
-{
-public:
-	int* path;
-	int kill_reward;
-
-	Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
 };

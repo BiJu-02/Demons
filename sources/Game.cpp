@@ -30,7 +30,10 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		frame_delay = 1000 / fps;
 		is_running = true;
 		screen = 1;
-		wrld.map_tex = load_texture(wrld.map.map_file_path.c_str());
+		wrld.map_tex = load_texture("assets/images/map.png");
+
+		// temporary shit
+		//sprite_tex[0] = load_texture("assets/images/midrangesheet.png");
 	}
 }
 
@@ -132,8 +135,8 @@ void Game::render()
 			src_rec.h = sprite->src_h;
 			des_rec.x = sprite->xscrn;
 			des_rec.y = sprite->yscrn;
-			des_rec.w = sprite->width;
-			des_rec.h = sprite->height;
+			des_rec.w = sprite->wscrn;
+			des_rec.h = sprite->hscrn;
 			SDL_RenderCopy(ren, sprite_tex[sprite->tex_id], &src_rec, &des_rec);
 		}
 		for (int i = 0; i < 10; i++)
