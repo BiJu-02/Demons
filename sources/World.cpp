@@ -7,9 +7,9 @@ World::World() : map(Map("map"))
 	// load all sprite textures
 
 	// temporary shit
-	//is_playing = true;
-	//std::string s = "min";
-	//sprite_list.emplace_front(new Enemy(50, 520, 0, 80, 80, s, 0, map.path_instruct_x, map.path_instruct_y, map.map_chk_pts));
+	is_playing = true;
+	std::string s = "min";
+	sprite_list.emplace_front(new Enemy(50, 520, 0, 80, 80, s, 0, map.path_instruct_x, map.path_instruct_y, map.map_chk_pts));
 }
 
 // at the end of updates sort the forward list of sprites
