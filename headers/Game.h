@@ -48,6 +48,12 @@ public:
 	SDL_Texture* misc_tex[10];
 	bool misc_render[10];
 
+	std::string ldr_brd_names[5];
+	int ldr_brd_scores[5];
+	int no_of_plyrs;
+
+	std::string curr_plyr_name;
+
 	World wrld;
 
 	Game(const char *title, int x, int y, int w, int h, int sc, int fps);
