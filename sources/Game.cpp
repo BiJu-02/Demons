@@ -33,7 +33,7 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		wrld.map_tex = load_texture("assets/images/map.png");
 
 		// temporary shit
-		sprite_tex[0] = load_texture("assets/images/midrangesheet.png");
+		//sprite_tex[0] = load_texture("assets/images/midrangesheet.png");
 	}
 }
 
