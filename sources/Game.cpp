@@ -41,9 +41,9 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		// temporary shit
 		misc_tex[0] = load_texture("assets/images/blank.png");
 		misc_tex[1] = load_texture("assets/images/hud.png");
-		sprite_tex[0] = load_texture("assets/images/minionsheet.png");
-		sprite_tex[1] = load_texture("assets/images/midrangesheet.png");
-		sprite_tex[2] = load_texture("assets/images/bosssheet.png");
+		sprite_tex[0] = load_texture("assets/images/minionenemyspritesheet.png");
+		sprite_tex[1] = load_texture("assets/images/midenemyspritesheet.png");
+		sprite_tex[2] = load_texture("assets/images/bossenemyspritesheet.png");
 	}
 }
 

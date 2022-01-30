@@ -80,8 +80,7 @@ public:
 
 // ##############################
 	void handle_score_screen();	
-	void render_game_screen();
-
+	void render_score_screen();
 
 
 // ##############################
