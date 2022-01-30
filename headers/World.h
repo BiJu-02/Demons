@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <list>
 #include <vector>
 #include <algorithm>
@@ -26,23 +28,33 @@
 class World
 {
 public:
-	bool is_playing, in_game;
+	bool in_game, is_playing, is_paused;
 
 	Map map;
 	SDL_Texture* map_tex;
-	SDL_Texture *sprite_tex[8];		
+	
 	std::list<Game_Obj*> sprite_list;
-	int max_heroes, num_of_heroes;
+
+	int max_heroes = 6, no_of_heroes;
 	Game_Obj* hero_arr[6];
+	int slot = -1;
+
 	std::vector<int> enemy_batch;
 	int batch_size, wave_no;
+	double spawn_tm_intrvl = 4, spawn_tm_qtm = 0.017;
+	bool enemy_on_map;
 
 	int score;
 	int lives;
 	int coins;
 
 	World();
+	void start_game();
 	void update();
+	void spawn_enemy();
+	void sprite_list_trav();
+	void decr_life(int id);
 	void sprite_create();
 	void sprite_destroy();
+	void exit_game();
 };

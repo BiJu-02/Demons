@@ -13,6 +13,7 @@ class Game_Obj
 {
 public:
 	bool is_active, is_moving;
+	bool enemy_passed = false;
 	int src_x, src_y, src_w, src_h;
 	int wscrn, hscrn;
 	int xscrn, yscrn;		// centre coordinate of sprite along its width on screen (drec.x + drec.w / 2, drec.y + height)
@@ -28,6 +29,8 @@ public:
 
 	Game_Obj(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
 	virtual void update() {}
+	virtual void set_camp(int x, int y) {}
+	virtual void set_dest(int x, int y, int face) {}
 };
 
 //facing:
@@ -51,7 +54,6 @@ public:
 	//double 
 
 	Character(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
-	void set_dest(int x, int y, int face);
 };
 
 
@@ -74,4 +76,6 @@ public:
 	double heal_rate, revival_tm;
 
 	Hero(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
+	void set_dest(int x, int y, int face);
+	void set_camp(int x, int y);
 };

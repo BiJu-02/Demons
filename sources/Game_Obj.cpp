@@ -5,7 +5,7 @@
 
 Game_Obj::Game_Obj(int x, int y, int z, int w, int h, std::string& nm, int tx_id)
 {
-	xi = x2d = x3d = x - 60;
+	xi = x2d = x3d = x;
 	z3d = z;
 	y3d = y;
 	yi = y2d = rnd(y - z / 1.7320508076);
@@ -17,7 +17,11 @@ Game_Obj::Game_Obj(int x, int y, int z, int w, int h, std::string& nm, int tx_id
 	tex_id = tx_id;
 }
 
-void Character::set_dest(int x, int y, int face)
+void Hero::set_dest(int x, int y, int face)
+{
+}
+
+void Hero::set_camp(int x, int y)
 {
 }
 
@@ -36,6 +40,7 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 	chk_pts = cp;		
 	cur_chk_pt = 0;
 	is_moving = true;
+	is_active = true;
 	src_x = src_y = 0;
 	src_w = src_h = 80;
 		// stats and kill reward, kinematic variables,
@@ -44,9 +49,6 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 	kill_reward = 1 + tx_id;
 	vxy = 40 - tx_id * 0.1;
 	set_path();
-	std::cout << tm_prd << std::endl;
-	std::cout << path_x[cur_chk_pt] << std::endl;
-	std::cout << path_y[cur_chk_pt] << std::endl;
 	action = 0;
 }
 
@@ -87,6 +89,7 @@ inline void Enemy::set_path()
 	{
 		is_moving = false;
 		is_active = false;
+		enemy_passed = true;
 	}
 	tm_cur = 0;
 	// from path calculate next time period and vx and vy
@@ -98,7 +101,7 @@ inline void Enemy::set_path()
 	xi = x2d;
 	yi = y2d;
 	cur_chk_pt++;
-	std::cout << cur_chk_pt << std::endl;
+	//std::cout << cur_chk_pt << std::endl;
 }
 
 

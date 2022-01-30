@@ -5,12 +5,10 @@
 
 //int screen 
 //0 -> start
-//1 -> pre playing
-//2 -> playing map
-//3 -> paused map
-//4 -> credits
-//5 -> score, name input and save
-//6 -> leaderboard
+//1 -> game
+//2 -> credits
+//3 -> score, name input and save
+//4 -> leaderboard
 
 //int slot
 //-1 -> none selected
@@ -19,14 +17,13 @@
 //bool misc_render[10]
 //0:start screen, 
 //1:hud, 
-//2:hero slots, 
-//3:character stats, 
-//4:hero types, 
-//5:lvl up/skill?, 
-//6:paused transparent shade, 
-//7:quit confirm, 
-//8:enter name and save, 
-//9:leaderboard
+//2:character stats, 
+//3:hero types, 
+//4:lvl up/skill?, 
+//5:paused transparent shade, 
+//6:quit confirm, 
+//7:enter name and save, 
+//8:leaderboard
 
 
 class Game
@@ -42,17 +39,26 @@ public:
 
 	bool is_running;
 	int screen;
-	int slot = -1;
+	
+	SDL_Texture* icons;
 
 	SDL_Texture* sprite_tex[6];		// according to tex_id in Game_Obj
 	SDL_Texture* misc_tex[10];
 	bool misc_render[10];
 
+
+// ####################################
+	std::string curr_plyr_name;
 	std::string ldr_brd_names[5];
 	int ldr_brd_scores[5];
+	bool cur_score_greater;
 	int no_of_plyrs;
+	//wrld.score....DO NOT REWRITE
 
-	std::string curr_plyr_name;
+
+
+
+// #########################################
 
 	World wrld;
 
@@ -63,11 +69,22 @@ public:
 	void render();
 	void set_misc_render();
 	void clean();
+
 	SDL_Texture* load_texture(const char* img_path);
+
 	void handle_start_screen(int x, int y);		// start and cred button
-	void handle_game_screen1(int x, int y);		// pre playing...no enemies spawning, can interact with hero slot and hero position
-	void handle_game_screen2(int x, int y);		// enemies spawning and following path, can interact with hero slot and hero position, can interact with play/pause butt
-	void handle_game_screen3(int x, int y);		// all game loop stops...can onli interact with play/pause butt
+	void handle_game_screen(int x, int y);
+
+	void render_game_screen();
+
+
+// ##############################
 	void handle_score_screen();	
+	void render_game_screen();
+
+
+
+// ##############################
 };
 
+ 

@@ -29,11 +29,21 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 
 		frame_delay = 1000 / fps;
 		is_running = true;
-		screen = 1;
+		// for actual game screen = 0;
+		screen = 0; 
+		set_misc_render();
 		wrld.map_tex = load_texture("assets/images/map.png");
+		icons = load_texture("assets/images/icons.png");
+
+		// load all misc_tex
+
 
 		// temporary shit
-		//sprite_tex[0] = load_texture("assets/images/midrangesheet.png");
+		misc_tex[0] = load_texture("assets/images/blank.png");
+		misc_tex[1] = load_texture("assets/images/hud.png");
+		sprite_tex[0] = load_texture("assets/images/minionsheet.png");
+		sprite_tex[1] = load_texture("assets/images/midrangesheet.png");
+		sprite_tex[2] = load_texture("assets/images/bosssheet.png");
 	}
 }
 
@@ -64,11 +74,8 @@ void Game::handle_event()
 	{
 	case SDL_MOUSEBUTTONDOWN:
 		if (screen == 1)
-		{ handle_game_screen1(event.button.x, event.button.y); }
-		else if (screen == 2)
-		{ handle_game_screen2(event.button.x, event.button.y); }
-		else if (screen == 3)
-		{ handle_game_screen3(event.button.x, event.button.y); }
+		{ handle_game_screen(event.button.x, event.button.y); }
+		
 		else
 		{ handle_start_screen(event.button.x, event.button.y); }
 		break;
@@ -84,69 +91,121 @@ void Game::handle_event()
 
 void Game::handle_start_screen(int x, int y)
 {
-	//if (lx < x && x < ux && ly < y && y < uy)
-	//{ screen = 1; }
+	// for start butt
+	if (10 < x && x < 1250 && 10 < y && y < 700)
+	{
+		screen = 1; 
+		wrld.start_game(); 
+		set_misc_render();
+	}
+	// for credits butt
 	//if (lx < x && x < ux && ly < y && y < uy)
 	//{ screen = 2; }
 }
 
-void Game::handle_game_screen1(int x, int y)
+void Game::handle_game_screen(int x, int y)
 {
+	// if quit button is pressed ...is_paused = true ...and dialog box for confirmation
+	// if quit confirmed ...wrld.exit_game() ...screen = 0
+	if (1170 < x && x < 1230 && 10 < y && y < 70)
+	{
+		if (!wrld.is_playing)
+		{ wrld.is_playing = true; std::cout << "playing" << std::endl; }
+		else if (wrld.is_paused)
+		{ wrld.is_paused = false; std::cout << "resumed" << std::endl; }
+		else
+		{ wrld.is_paused = true; std::cout << "paused" << std::endl; }
+	}
+	//hero slot
+	else if (!wrld.is_paused)
+	{
+		if (760 < x && x < 1240 && 640 < y)
+		{
+			int tmpx = 840;
+			for (int i = 0; i < 6; i++)
+			{
+				if (x < tmpx)
+				{
+					wrld.slot = i;
+					std::cout << wrld.slot << std::endl;
+					break;
+				}
+				else
+				{ tmpx += 80; }
+			}
+
+		}
+	}
+
+	//map
 }
 
-void Game::handle_game_screen2(int x, int y)
-{
-}
-
-void Game::handle_game_screen3(int x, int y)
-{
-}
 
 void Game::handle_score_screen()
 {
 }
 
+
 void Game::update()
 {
-	if (wrld.is_playing)
+	if (screen == 1)
 	{
-		wrld.update();		// hehe ...prolly not so simple ;-;
-
+		if (!wrld.is_paused)
+		{ wrld.update(); }
+		if (wrld.lives < 1)
+		{
+			screen = 3;
+			wrld.exit_game();
+		}
 	}
-	else
-	{
-		// start, post game screens
-
-	}
-	
 }
 
 void Game::render()
 {
 	SDL_RenderClear(ren);
-	if (screen && screen < 4)
-	{
-		SDL_RenderCopy(ren, wrld.map_tex, NULL, NULL);
-		for (auto sprite : wrld.sprite_list)
-		{ 
-			src_rec.x = sprite->src_x;
-			src_rec.y = sprite->src_y;
-			src_rec.w = sprite->src_w;
-			src_rec.h = sprite->src_h;
-			des_rec.x = sprite->xscrn;
-			des_rec.y = sprite->yscrn;
-			des_rec.w = sprite->wscrn;
-			des_rec.h = sprite->hscrn;
-			SDL_RenderCopy(ren, sprite_tex[sprite->tex_id], &src_rec, &des_rec);
-		}
-		for (int i = 0; i < 10; i++)
-		{
-			if (misc_render[i])
-			{ SDL_RenderCopy(ren, misc_tex[i], NULL, NULL); }
-		}
-	}
+	if (screen == 1)
+	{ render_game_screen(); }
+	else
+	{ SDL_RenderCopy(ren, misc_tex[0], NULL, NULL); }
 	
 	SDL_RenderPresent(ren);
+}
+
+inline void Game::render_game_screen()
+{
+	SDL_RenderCopy(ren, wrld.map_tex, NULL, NULL);
+	for (auto sprite : wrld.sprite_list)
+	{
+		src_rec.x = sprite->src_x;
+		src_rec.y = sprite->src_y;
+		src_rec.w = sprite->src_w;
+		src_rec.h = sprite->src_h;
+		des_rec.x = sprite->xscrn;
+		des_rec.y = sprite->yscrn;
+		des_rec.w = sprite->wscrn;
+		des_rec.h = sprite->hscrn;
+		SDL_RenderCopy(ren, sprite_tex[sprite->tex_id], &src_rec, &des_rec);
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		if (misc_render[i])
+		{
+			SDL_RenderCopy(ren, misc_tex[i], NULL, NULL);
+		}
+	}
+	// icons...hoe to do dis?
+	if (!wrld.is_playing || wrld.is_paused)
+	{
+		src_rec.x = 120; src_rec.y = 0;
+	}
+	else
+	{
+		src_rec.x = 80; src_rec.y = 0;
+	}
+	src_rec.w = 40; src_rec.h = 40;
+	des_rec.x = 1170; des_rec.y = 10;
+	des_rec.w = 60; des_rec.h = 60;
+	SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 }
 
 void Game::clean()
@@ -161,9 +220,10 @@ void Game::clean()
 // set values of misc_render array based on screen and slot value
 void Game::set_misc_render()
 {
-	if (screen)
+	if (screen == 1)
 	{
-
+		misc_render[0] = false;
+		misc_render[1] = true;
 	}
 	else
 	{
