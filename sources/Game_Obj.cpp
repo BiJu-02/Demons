@@ -24,31 +24,42 @@ Character::Character(int x, int y, int z, int w, int h, std::string& nm, int tx_
 
 void Character::set_src()
 {
-	is_ded = false;
+	//is_ded = false;
 	// for source rect of charactes using action and facing
-
+	if (is_ded)
+	{
+		src_x = 0;
+		src_y = 0;
+	}
+	src_y = facing * 80;
+	src_x = action * 80;
 }
 
 bool Character::in_fight()
 {
-	return target.empty();
+	return !target.empty();
 }
 
-void Character::set_target(Game_Obj* t)
+void Enemy::set_target(Game_Obj* t)
 {
 	target.push_back(t);
 }
 
 Hero::Hero(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Character(x, y, z, w, h, nm, tx_id)
 {
+	src_x = 0;
+	src_y = 160;
+	src_w = w;
+	src_h = h;
 	camp_x = x;
 	camp_y = y;
 	lvl = 1;
 	is_moving = false;
+	facing = 2;
 }
 
 
-void Hero::set_camp(int x, int y)
+void Melee::set_camp(int x, int y)
 {
 	release_targets();
 	camp_x = x;
@@ -56,6 +67,7 @@ void Hero::set_camp(int x, int y)
 	to_camp = true;
 	at_camp = false;
 	to_enemy = false;
+	in_stance = false;
 	set_dest(x, y);
 }
 
@@ -63,7 +75,7 @@ void Hero::lvl_up()
 {
 }
 
-void Hero::set_target(Game_Obj* t)
+void Melee::set_target(Game_Obj* t)
 {
 	if (!target.empty()) 
 	{ target.clear(); }
@@ -79,39 +91,56 @@ Game_Obj* Hero::get_target()
 
 void Hero::remove_target(Game_Obj* t = NULL)
 {
-	target.clear();
+	if (!target.empty())
+	{ target.clear(); }
 }
 
-bool Hero::ready_to_fight()
+bool Melee::ready_to_fight()
 {
 	return in_stance;
 }
 
+void Character::dec_hp(int a)
+{
+	hp -= a;
+}
+
 void Melee::release_targets()
 {
-	Game_Obj* temp = target.back();
-	target.clear();
-	temp->remove_target(this);
+	if (!target.empty())
+	{
+		Game_Obj* temp = target.back();
+		target.clear();
+		temp->remove_target(this);
+	}
 }
 
 Melee::Melee(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Hero(x, y, z, w, h, nm, tx_id)
 {
+	heal_rate = 1;
 	rev_tmr = 0;
 	revival_tm = 7;
+	is_active = true;
 	at_camp = true;
 	to_enemy = false;
 	to_camp = false;
 	in_stance = false;
+	atk_tmr = 0;
 }
 
 void Melee::update()
 {
 	if (hp < 1)
 	{
-		is_ded;
+		is_ded = true;
 		src_x = 0;
 		src_y = 0;
 		hp = max_hp;
+		rev_tmr = 0;
+		in_stance = false;
+		release_targets();
+		action = 0;
+		facing = 0;
 		return;
 	}
 	if (is_ded)
@@ -120,6 +149,13 @@ void Melee::update()
 		{
 			rev_tmr = 0;
 			is_ded = false;
+			at_camp = true;
+			to_enemy = false;
+			to_camp = false;
+			xscrn = camp_x;
+			yscrn = camp_y;
+			action = 0;
+			facing = 2;
 		}
 		else
 		{
@@ -129,7 +165,7 @@ void Melee::update()
 	}
 	if (hp < max_hp)
 	{
-		hp += 0.017;
+		hp += 0.017 * heal_rate;
 	}
 	if (is_moving)
 	{
@@ -151,8 +187,11 @@ void Melee::update()
 		tm_cur += tm_qtm;
 		x2d = xi + vx * tm_cur;
 		y2d = yi + vy * tm_cur;
-		if (int(tm_cur * 100) % 3 == 0)
-		{ action = (action + 1) % 3; }
+		if (int(tm_cur * 100) % 13 == 0)
+		{
+			action = (action + 1) % 3;
+			if (action == 0) { action = 1; }
+		}
 		xscrn = x2d - wscrn / 2;
 		yscrn = y2d - hscrn;
 		return;
@@ -161,7 +200,21 @@ void Melee::update()
 	{
 		if (in_stance)		// fighting
 		{
-
+			if (atk_tmr > 0.99)
+			{
+				atk_tmr = 0;
+				target.back()->dec_hp(atk);
+			}
+			else
+			{
+				atk_tmr += 0.017;
+				if (atk_tmr < 0.33)
+				{ action = 0; }
+				else if (atk_tmr < 0.66)
+				{ action = 3; }
+				else
+				{ action = 4; }
+			}
 		}
 		else				// need to move to enemy...
 		{
@@ -179,6 +232,7 @@ void Melee::update()
 			set_dest(camp_x, camp_y);
 		}
 	}
+	set_src();
 }
 
 void Melee::set_dest(int x, int y)
@@ -188,6 +242,15 @@ void Melee::set_dest(int x, int y)
 	ang = atan2(y - y2d, x - x2d);
 	vx = vxy * cos(ang);
 	vy = vxy * sin(ang);
+	// set face using ang...?
+	if (1.396263 <= ang && ang <= 1.919862)
+	{ facing = 0; }
+	else if (-1.919862 <= ang && ang <= -1.396263)
+	{ facing = 3; }
+	else if (-1.396263 < ang && ang < 1.396263)
+	{ facing = 1; }
+	else
+	{ facing = 2; }
 	xi = x2d;
 	yi = y2d;
 	is_moving = true;
@@ -196,6 +259,7 @@ void Melee::set_dest(int x, int y)
 Range::Range(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Hero(x, y, z, w, h, nm, tx_id)
 {
 	// "range"
+	is_active = true;
 }
 
 void Range::update()
@@ -203,22 +267,64 @@ void Range::update()
 	// either fighting or not...
 	if (in_fight())
 	{
-		if (dist(x2d, y2d, target.back()->x2d, target.back()->x3d) < 200)
+		double dis = dist(x2d, y2d, target.back()->x2d, target.back()->x3d);
+
+		if (dis < 200)
 		{
 			// phat se headshot
+			if (atk_tmr > 1)
+			{
+				atk_tmr = 0;
+				rasengan = true;			// set a flag to initialize blue ball
+			}
+			else
+			{
+				atk_tmr += 0.017;
+				
+				if (atk_tmr < 0.33)
+				{ action = 0; }
+				else if (atk_tmr < 0.66)
+				{ action = 3; }
+				else
+				{ action = 4; }
+			}
 		}
 		else
-		{ target.clear(); }
+		{ target.clear(); }		// after it goes out of range
 	}
 	// else nothing...?
 }
 
-void Range::set_dest(int x, int y)
+void Range::set_camp(int x, int y)
 {
 	x2d = x;
 	y2d = y;
 	xscrn = x2d - wscrn / 2;
 	yscrn = y2d - hscrn;
+}
+
+void Range::set_target(Game_Obj* t)
+{
+	if (!target.empty()) 
+	{ target.clear(); }
+	target.push_back(t);
+	atk_tmr = 1;
+	proj_tmr = 0;
+}
+
+bool Range::is_blast()
+{
+	return rasengan;
+}
+
+void Range::blast_done()
+{
+	rasengan = false;
+}
+
+int Character::get_atk()
+{
+	return atk;
 }
 
 
@@ -232,15 +338,16 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 	is_moving = true;
 	is_active = true;
 	// set facing and action too
-	src_x = src_y = 0;
+	src_x = 0;
+	src_y = 80;
 	src_w = src_h = 80;
 		// stats and kill reward, kinematic variables,
 	hp = 100 + tx_id * 0.5;
 	atk = 10 + tx_id * 10;
 	kill_reward = 1 + tx_id * 10;
-	vxy = 40 - tx_id * 0.1;
+	vxy = 30 - tx_id * 0.1;
 	set_path();
-	action = 0;
+	action = 1;
 }
 
 void Enemy::update()
@@ -257,7 +364,26 @@ void Enemy::update()
 		Game_Obj* temp = target.front();
 		if (temp->ready_to_fight())
 		{
-
+			if (atk_tmr > 0.99)
+			{ 
+				atk_tmr = 0;
+				temp->dec_hp(atk);
+			}
+			else
+			{
+				atk_tmr += 0.017;
+				if (atk_tmr < 0.33)
+				{ action = 0; }
+				else if (atk_tmr < 0.66)
+				{ action = 3; }
+				else
+				{ action = 4; }
+			}
+		}
+		else
+		{
+			// wet action
+			action = 0;
 		}
 
 		return;
@@ -269,8 +395,11 @@ void Enemy::update()
 			tm_cur += tm_qtm;
 			x2d = xi + rnd(vx * tm_cur);
 			y2d = yi + rnd(vy * tm_cur);
-			if (int(tm_cur * 100) % 3 == 0)
-			{ action = (action + 1) % 3; }
+			if (int(tm_cur * 100) % 13 == 0)
+			{ 
+				action = (action + 1) % 3;
+				if (action == 0) { action = 1; }
+			}
 			//std::cout << action << std::endl;
 		}
 		else
@@ -279,6 +408,7 @@ void Enemy::update()
 		}
 		xscrn = x2d - wscrn / 2;
 		yscrn = y2d - hscrn;
+		set_src();
 	}
 	
 }
@@ -300,8 +430,21 @@ inline void Enemy::set_path()
 	vy = vxy * sin(ang);
 	xi = x2d;
 	yi = y2d;
+	if (1.396263 <= ang && ang <= 1.919862)
+	{ facing = 0; }
+	else if (-1.919862 <= ang && ang <= -1.396263)
+	{ facing = 3; }
+	else if (-1.396263 < ang && ang < 1.396263)
+	{ facing = 1; }
+	else
+	{ facing = 2; }
 	cur_chk_pt++;
 	//std::cout << cur_chk_pt << std::endl;
+}
+
+void Enemy::set_range_target(Game_Obj* t)
+{
+	range_target.push_back(t);
 }
 
 void Enemy::remove_target(Game_Obj* t = NULL)
@@ -312,14 +455,60 @@ void Enemy::remove_target(Game_Obj* t = NULL)
 void Enemy::release_targets()
 {
 	Game_Obj* temp;
-	std::list<Game_Obj*>::iterator iter = target.begin();
-	std::list<Game_Obj*>::iterator end = target.end();
-	while (iter != end)
+	while (target.begin() != target.end())
 	{
-		temp = *iter;
-		iter = target.erase(iter);
+		temp = target.back();
+		target.pop_back();
 		temp->remove_target(this);
 	}
+	while (range_target.begin() != range_target.end())
+	{
+		temp = range_target.back();
+		range_target.pop_back();
+		temp->remove_target(this);
+	}
+	
 }
 
+void Enemy::about_to_fight()
+{
+	//action
+}
 
+Projectile::Projectile(int x, int y, int z, int w, int h, std::string& nm, int tx_id, Game_Obj* shtr) : Game_Obj(x, y, z, w, h, nm, tx_id)
+{
+	is_active = true;
+	shooter = shtr;
+	Game_Obj* temp = shtr->get_target();
+	// set speed and tmr
+	vxy = 150;
+	tm_cur = 0;
+	tm_prd = dist(x, y, temp->x2d, temp->y2d) / vxy;
+	ang = atan2(temp->y2d - y, temp->x2d - x);
+	vx = vxy * cos(ang);
+	vy = vxy * sin(ang);
+}
+
+void Projectile::update()
+{
+	// direct tmr condition
+	if (tm_cur < tm_prd)
+	{
+		is_active = false;
+		// access target of shooter is still a target and dec hp by shooters atk
+		if (shooter->in_fight())
+		{
+			Game_Obj* temp = shooter->get_target();
+			temp->dec_hp(shooter->get_atk());
+		}
+	}
+	else
+	{
+		tm_cur += tm_qtm;
+		x2d = xi + rnd(vx * tm_cur);
+		y2d = yi + rnd(vy * tm_cur);
+		xscrn = x2d - wscrn / 2;
+		yscrn = y2d - hscrn;
+	}
+
+}

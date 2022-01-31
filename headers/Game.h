@@ -19,7 +19,7 @@
 //2:character stats, 
 //3:hero types, 
 //4:lvl up, 
-//5: hero selection
+//5:hero selection
 //6:paused transparent shade, 
 //7:quit confirm, 
 //8:enter name and save, 

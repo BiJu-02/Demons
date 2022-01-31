@@ -28,7 +28,6 @@ void World::start_game()
 // at the end of updates sort the forward list of sprites
 void World::update()
 {
-	sprite_list_trav();
 
 	for (auto sprite : sprite_list)
 	{ sprite->update(); }
@@ -37,22 +36,42 @@ void World::update()
 	if (is_playing)
 	{
 		spawn_enemy();
+		sprite_list_trav();
 		// fighting mechanism
+		for (int i = 0; i < 6; i++)
+		{
+			if (hero_arr[i])
+			{
+				if (hero_arr[i]->name == "range" && hero_arr[i]->in_fight())
+				{
+					// adding projectiles to sprite_list
+					if (hero_arr[i]->is_blast())
+					{
+						// initialize projectile with coordinates
+						sprite_list.push_back(new Projectile(1200, 280, 0, 80, 80, proj, 3, hero_arr[i]));
+						hero_arr[i]->blast_done();
+					}
+				}
+				if (hero_arr[i]->name == "melee" && hero_arr[i]->is_ded)
+				{
+					hero_arr[i]->release_targets();
+				}
+			}
+		}
 
 	}
-	// destroy inactive sprite ...if (!sprite.is_active) 
 	sprite_list.sort([](Game_Obj* a, Game_Obj* b) { return a->yscrn < b->yscrn; });
 }
 
 void World::spawn_enemy()
 {
-	std::string s = "enemy";
 	int id;
 	if (!enemy_batch.empty())
 	{
 		if (spawn_tm_intrvl > 5)
 		{
-			sprite_list.push_back(new Enemy(0, 520, 0, 80, 80, s, enemy_batch.back(), map.path_instruct_x, map.path_instruct_y, map.map_chk_pts));
+			sprite_list.push_back(new Enemy(0, 520, 0, 80, 80, enemy, enemy_batch.back(), map.path_instruct_x, map.path_instruct_y, map.map_chk_pts));
+			//std::cout << enemy_batch.back() << std::endl;
 			enemy_batch.pop_back();
 			std::cout << sprite_list.size() << std::endl;
 			spawn_tm_intrvl = 0;
@@ -115,14 +134,19 @@ void World::spawn_enemy()
 
 }
 
+// called by event handler
 inline void World::spawn_melee()
 {
 	// "melee"
+	sprite_list.push_back(new Melee(1200, 280, 0, 80, 80, melee, 3));
+	hero_arr[slot] = sprite_list.back();
 }
 
 inline void World::spawn_range()
 {
 	// "range"
+	sprite_list.push_back(new Range(1200, 280, 0, 80, 80, range, 3));
+	hero_arr[slot] = sprite_list.back();
 }
 
 void World::sprite_list_trav()
@@ -145,11 +169,8 @@ void World::sprite_list_trav()
 			{
 				if (sprite->enemy_passed)
 				{ decr_life(sprite->tex_id); }
-				else
-				{ coins += sprite->get_reward(); }
-			}
-			if (sprite->is_ded)
-			{
+				else		
+				{ coins += sprite->get_reward(); }		// wut abt score..?
 				sprite->release_targets();
 			}
 
@@ -177,7 +198,7 @@ void World::sprite_list_trav()
 								hero_arr[i]->set_target(sprite);
 							}
 						}
-						else
+						else if (hero_arr[i]->name == "melee")
 						{
 							if (dis1[i] > temp)
 							{
@@ -186,6 +207,7 @@ void World::sprite_list_trav()
 							}
 						}
 					}
+					
 				}
 			}
 
@@ -195,9 +217,12 @@ void World::sprite_list_trav()
 		{
 			if (hero_arr[i])
 			{
-				if (hero_arr[i]->get_target() == sprite && hero_arr[i]->name == "melee")
-				{ 
-					sprite->set_target(hero_arr[i]); 
+				if (hero_arr[i]->get_target() == sprite)
+				{
+					if (hero_arr[i]->name == "melee")
+					{ sprite->set_target(hero_arr[i]); }
+					else if (hero_arr[i]->name == "range")
+					{ sprite->set_range_target(hero_arr[i]); }
 				}
 			}
 		}
@@ -241,8 +266,6 @@ void World::exit_game()
 		sprite_list.pop_back();
 		delete temp;
 	}
-	for (int i=0; i<6; i++)
-	{ hero_arr[i] = NULL; }
 }
 
  

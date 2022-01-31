@@ -41,9 +41,10 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		// temporary shit
 		misc_tex[0] = load_texture("assets/images/blank.png");
 		misc_tex[1] = load_texture("assets/images/hud.png");
-		sprite_tex[0] = load_texture("assets/images/minionenemyspritesheet.png");
-		sprite_tex[1] = load_texture("assets/images/midenemyspritesheet.png");
-		sprite_tex[2] = load_texture("assets/images/bossenemyspritesheet.png");
+
+		sprite_tex[0] = load_texture("assets/images/minion.png");
+		sprite_tex[1] = load_texture("assets/images/mid_enemy.png");
+		sprite_tex[2] = load_texture("assets/images/boss.png");
 	}
 }
 
@@ -233,6 +234,7 @@ inline void Game::render_game_screen()
 		}
 	}
 	// icons...hoe to do dis?
+	// play/pause butt
 	if (!wrld.is_playing || wrld.is_paused)
 	{ src_rec.x = 120; src_rec.y = 0; }
 	else
@@ -242,6 +244,7 @@ inline void Game::render_game_screen()
 	des_rec.w = 60; des_rec.h = 60;
 	SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 
+	// icons around sluts
 	if (wrld.slot != -1)
 	{
 		if (wrld.hero_arr[wrld.slot])
@@ -252,6 +255,7 @@ inline void Game::render_game_screen()
 		else
 		{
 			// render hero options to spawn...
+
 		}
 	}
 
