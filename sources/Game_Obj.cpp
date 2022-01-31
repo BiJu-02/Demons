@@ -164,8 +164,8 @@ void Melee::update()
 			at_camp = true;
 			to_enemy = false;
 			to_camp = false;
-			xscrn = camp_x;
-			yscrn = camp_y;
+			xscrn = camp_x - wscrn / 2;
+			yscrn = camp_y - hscrn;
 			action = 0;
 			facing = 2;
 		}
@@ -236,7 +236,7 @@ void Melee::update()
 			at_camp = false;
 			set_dest(target.back()->x2d + target.back()->wscrn / 2, target.back()->y2d);
 		}
-
+		facing = 2;
 	}
 	else
 	{
@@ -244,6 +244,11 @@ void Melee::update()
 		{
 			to_camp = true;
 			set_dest(camp_x, camp_y);
+		}
+		else
+		{
+			action = 0;
+			facing = 2;
 		}
 	}
 	set_src();
@@ -275,6 +280,9 @@ Range::Range(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : He
 {
 	// "range"
 	is_active = true;
+	hp = 100;
+	atk = 10;
+	atk_tmr = 1;
 }
 
 void Range::update()
@@ -282,7 +290,7 @@ void Range::update()
 	// either fighting or not...
 	if (in_fight())
 	{
-		double dis = dist(x2d, y2d, target.back()->x2d, target.back()->x3d);
+		double dis = dist(x2d, y2d, target.back()->x2d, target.back()->y2d);
 
 		if (dis < 200)
 		{
@@ -324,8 +332,7 @@ void Range::set_target(Game_Obj* t)
 	if (!target.empty()) 
 	{ target.clear(); }
 	target.push_back(t);
-	atk_tmr = 1;
-	proj_tmr = 0;
+	atk_tmr = 0;
 }
 
 bool Range::is_blast()
@@ -401,6 +408,7 @@ void Enemy::update()
 			// wet action
 			action = 0;
 		}
+		facing = 1;
 		set_src();
 		return;
 	}
@@ -493,14 +501,16 @@ void Enemy::about_to_fight()
 
 Projectile::Projectile(int x, int y, int z, int w, int h, std::string& nm, int tx_id, Game_Obj* shtr) : Game_Obj(x, y, z, w, h, nm, tx_id)
 {
+	src_x = 0; src_y = 0;
+	src_w = 40; src_h = 40;
 	is_active = true;
 	shooter = shtr;
 	Game_Obj* temp = shtr->get_target();
 	// set speed and tmr
 	vxy = 150;
 	tm_cur = 0;
-	tm_prd = dist(x, y, temp->x2d, temp->y2d) / vxy;
-	ang = atan2(temp->y2d - y, temp->x2d - x);
+	tm_prd = dist(x, y, temp->x2d, temp->y2d - temp->hscrn) / vxy;
+	ang = atan2((temp->y2d - 40) - y, temp->x2d - x);
 	vx = vxy * cos(ang);
 	vy = vxy * sin(ang);
 }
@@ -508,7 +518,7 @@ Projectile::Projectile(int x, int y, int z, int w, int h, std::string& nm, int t
 void Projectile::update()
 {
 	// direct tmr condition
-	if (tm_cur < tm_prd)
+	if (tm_cur > tm_prd)
 	{
 		is_active = false;
 		// access target of shooter is still a target and dec hp by shooters atk

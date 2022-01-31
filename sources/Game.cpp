@@ -47,6 +47,7 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		sprite_tex[2] = load_texture("assets/images/boss.png");
 		sprite_tex[3] = load_texture("assets/images/melee.png");
 		sprite_tex[4] = load_texture("assets/images/range.png");
+		sprite_tex[5] = load_texture("assets/images/energyball.png");
 	}
 }
 

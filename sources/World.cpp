@@ -48,7 +48,7 @@ void World::update()
 					if (hero_arr[i]->is_blast())
 					{
 						// initialize projectile with coordinates
-						sprite_list.push_back(new Projectile(1200, 280, 0, 80, 80, proj, 3, hero_arr[i]));
+						sprite_list.push_back(new Projectile(hero_arr[i]->x2d, hero_arr[i]->y2d - hero_arr[i]->hscrn, 0, 20, 20, proj, 5, hero_arr[i]));
 						hero_arr[i]->blast_done();
 					}
 				}
