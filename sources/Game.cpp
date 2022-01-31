@@ -22,7 +22,7 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 
 		if (!TTF_Init())
 		{
-			font = TTF_OpenFont("res/fonts/arial.ttf", 12);
+			font = TTF_OpenFont("res/fonts/ARCADECLASSIC.TTF", 12);
 			std::cout << "font loaded" << std::endl;
 		}
 		else { exit(1); }
@@ -45,6 +45,8 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		sprite_tex[0] = load_texture("assets/images/minion.png");
 		sprite_tex[1] = load_texture("assets/images/mid_enemy.png");
 		sprite_tex[2] = load_texture("assets/images/boss.png");
+		sprite_tex[3] = load_texture("assets/images/melee.png");
+		sprite_tex[4] = load_texture("assets/images/range.png");
 	}
 }
 
@@ -138,19 +140,27 @@ void Game::handle_game_screen(int x, int y)
 					{ tmpx += 80; }
 				}
 			}
-			else if (540 < x && x < 560)
+			else if (520 < x && x < 600)
 			{
 				if (wrld.slot != -1)
 				{
-					if (wrld.hero_arr[wrld.slot])
+					if (wrld.hero_arr[wrld.slot])		// check for coins too
 					{
 						// upgrade
 
 					}
 					else
 					{
-						// hero selection
-						
+						// hero selection and spawning;
+						if (wrld.coins >= wrld.hero_cost)
+						{
+							if (x < 560)
+							{ wrld.spawn_melee(); }
+							else
+							{ wrld.spawn_range(); }
+							wrld.coins -= wrld.hero_cost;
+							wrld.slot = -1;
+						}
 					}
 				}
 			}
@@ -161,9 +171,10 @@ void Game::handle_game_screen(int x, int y)
 		{
 			if (wrld.slot != -1)
 			{
-				if (wrld.hero_arr[wrld.score])
+				if (wrld.hero_arr[wrld.slot])
 				{
 					wrld.hero_arr[wrld.slot]->set_camp(x, y);
+					wrld.slot = -1;
 				}
 				else
 				{ wrld.slot = -1; }
@@ -246,19 +257,52 @@ inline void Game::render_game_screen()
 
 	// icons around sluts
 	if (wrld.slot != -1)
-	{
+	{	// check if affordable
 		if (wrld.hero_arr[wrld.slot])
 		{
 			// render update button
+			if (wrld.coins < wrld.lvl_up_cost * wrld.hero_arr[wrld.slot]->get_lvl())
+			{ src_rec.x = 40; }
+			else
+			{ src_rec.x = 0; }
+			src_rec.y = 80;
+			src_rec.w = 40; src_rec.h = 40;
+			des_rec.x = 520; des_rec.y = 650;
+			des_rec.w = 60; des_rec.h = 60;
+			SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 			// display stats...icons and text
+
 		}
 		else
 		{
 			// render hero options to spawn...
-
+			if (wrld.coins < wrld.hero_cost)
+			{ src_rec.x = 80; }
+			else
+			{ src_rec.x = 0; }
+			src_rec.y = 40;
+			src_rec.w = 80; src_rec.h = 40;
+			des_rec.x = 520; des_rec.y = 660;
+			des_rec.w = 80; des_rec.h = 40;
+			SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 		}
 	}
-
+	// all the filled hero slots
+	int tmpx = 770;
+	for (int i = 0; i < 6; i++)
+	{
+		if (wrld.hero_arr[i])
+		{
+			if (wrld.hero_arr[i]->name == "melee")
+			{ src_rec.x = 0; src_rec.y = 40; }
+			else
+			{ src_rec.x = 40; src_rec.y = 40; }
+			src_rec.w = 40; src_rec.h = 40;
+			des_rec.x = tmpx; des_rec.y = 650;
+			des_rec.w = 60; des_rec.h = 60;
+		}
+		tmpx += 80;
+	}
 	// ze texts on hud at top
 
 }

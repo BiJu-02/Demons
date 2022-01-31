@@ -135,17 +135,17 @@ void World::spawn_enemy()
 }
 
 // called by event handler
-inline void World::spawn_melee()
+void World::spawn_melee()
 {
 	// "melee"
 	sprite_list.push_back(new Melee(1200, 280, 0, 80, 80, melee, 3));
 	hero_arr[slot] = sprite_list.back();
 }
 
-inline void World::spawn_range()
+void World::spawn_range()
 {
 	// "range"
-	sprite_list.push_back(new Range(1200, 280, 0, 80, 80, range, 3));
+	sprite_list.push_back(new Range(1200, 280, 0, 80, 80, range, 4));
 	hero_arr[slot] = sprite_list.back();
 }
 
@@ -182,7 +182,7 @@ void World::sprite_list_trav()
 		{
 			enemy_count++;
 			// for loop for hero_arr...coming soon?
-			for (int i = 0; i < no_of_heroes; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				if (hero_arr[i])
 				{
@@ -210,8 +210,6 @@ void World::sprite_list_trav()
 					
 				}
 			}
-
-			iter++;
 		}
 		for (int i = 0; i < 6; i++)
 		{
@@ -226,6 +224,7 @@ void World::sprite_list_trav()
 				}
 			}
 		}
+		iter++;
 	}
 	
 	if (enemy_count)

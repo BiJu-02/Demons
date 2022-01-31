@@ -38,6 +38,9 @@ public:
 	int lives;
 	int coins;
 
+	int hero_cost = 40;
+	int lvl_up_cost = 40;
+
 	std::string enemy = "enemy", melee = "melee", range = "range", proj = "proj";
 
 	World();

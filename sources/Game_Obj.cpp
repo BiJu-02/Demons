@@ -58,6 +58,11 @@ Hero::Hero(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Char
 	facing = 2;
 }
 
+int Hero::get_lvl()
+{
+	return lvl;
+}
+
 
 void Melee::set_camp(int x, int y)
 {
@@ -68,11 +73,15 @@ void Melee::set_camp(int x, int y)
 	at_camp = false;
 	to_enemy = false;
 	in_stance = false;
+	std::cout << "good 1" << std::endl;
 	set_dest(x, y);
 }
 
 void Hero::lvl_up()
 {
+	lvl++;
+	atk += lvl * 10;
+	hp += lvl * 100;
 }
 
 void Melee::set_target(Game_Obj* t)
@@ -117,6 +126,9 @@ void Melee::release_targets()
 
 Melee::Melee(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Hero(x, y, z, w, h, nm, tx_id)
 {
+	hp = max_hp = 200;
+	atk = 10;
+	vxy = 60;
 	heal_rate = 1;
 	rev_tmr = 0;
 	revival_tm = 7;
@@ -169,6 +181,7 @@ void Melee::update()
 	}
 	if (is_moving)
 	{
+		//std::cout << "good bhai good" << std::endl;
 		if (tm_cur > tm_prd)
 		{
 			is_moving = false;
@@ -194,6 +207,7 @@ void Melee::update()
 		}
 		xscrn = x2d - wscrn / 2;
 		yscrn = y2d - hscrn;
+		set_src();
 		return;
 	}
 	if (in_fight())
@@ -254,6 +268,7 @@ void Melee::set_dest(int x, int y)
 	xi = x2d;
 	yi = y2d;
 	is_moving = true;
+	std::cout << "good 2" << std::endl;
 }
 
 Range::Range(int x, int y, int z, int w, int h, std::string& nm, int tx_id) : Hero(x, y, z, w, h, nm, tx_id)
@@ -293,6 +308,7 @@ void Range::update()
 		{ target.clear(); }		// after it goes out of range
 	}
 	// else nothing...?
+	set_src();
 }
 
 void Range::set_camp(int x, int y)
@@ -344,7 +360,7 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 		// stats and kill reward, kinematic variables,
 	hp = 100 + tx_id * 0.5;
 	atk = 10 + tx_id * 10;
-	kill_reward = 1 + tx_id * 10;
+	kill_reward = 10 + tx_id * 10;
 	vxy = 30 - tx_id * 0.1;
 	set_path();
 	action = 1;
@@ -385,7 +401,7 @@ void Enemy::update()
 			// wet action
 			action = 0;
 		}
-
+		set_src();
 		return;
 	}
 	if (is_moving)

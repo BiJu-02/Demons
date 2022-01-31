@@ -47,7 +47,9 @@ public:
 	virtual void dec_hp(int a) {}
 	virtual bool is_blast() { return false; }
 	virtual void blast_done() {}
-	virtual int get_atk() { return 0; }
+	virtual int get_atk() { return NULL; }
+	virtual int get_lvl() { return NULL; }
+	virtual void lvl_up() {}
 };
 
 //facing:
@@ -109,6 +111,7 @@ public:
 	bool in_stance, at_camp, to_enemy, to_camp;
 
 	Hero(int x, int y, int z, int w, int h, std::string& nm, int tx_id);
+	int get_lvl();
 	void lvl_up();
 	Game_Obj* get_target();
 	void remove_target(Game_Obj* t);
