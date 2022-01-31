@@ -107,7 +107,7 @@ void Game::handle_game_screen(int x, int y)
 {
 	// if quit button is pressed ...is_paused = true ...and dialog box for confirmation
 	// if quit confirmed ...wrld.exit_game() ...screen = 0
-	if (1170 < x && x < 1230 && 10 < y && y < 70)
+	if (1170 < x && x < 1230 && 10 < y && y < 70)		// pause / play
 	{
 		if (!wrld.is_playing)
 		{ wrld.is_playing = true; std::cout << "playing" << std::endl; }
@@ -119,30 +119,65 @@ void Game::handle_game_screen(int x, int y)
 	//hero slot
 	else if (!wrld.is_paused)
 	{
-		if (760 < x && x < 1240 && 640 < y)
+		if (640 < y)
 		{
-			int tmpx = 840;
-			for (int i = 0; i < 6; i++)
+			if (760 < x && x < 1240)			// hero slots
 			{
-				if (x < tmpx)
+				int tmpx = 840;
+				for (int i = 0; i < 6; i++)
 				{
-					wrld.slot = i;
-					std::cout << wrld.slot << std::endl;
-					break;
+					if (x < tmpx)
+					{
+						wrld.slot = i;
+						std::cout << wrld.slot << std::endl;
+						set_misc_render();
+						break;
+					}
+					else
+					{ tmpx += 80; }
+				}
+			}
+			else if (540 < x && x < 560)
+			{
+				if (wrld.slot != -1)
+				{
+					if (wrld.hero_arr[wrld.slot])
+					{
+						// upgrade
+
+					}
+					else
+					{
+						// hero selection
+						
+					}
+				}
+			}
+			else
+			{ wrld.slot = -1; }
+		}
+		else if (120 < y)		//map
+		{
+			if (wrld.slot != -1)
+			{
+				if (wrld.hero_arr[wrld.score])
+				{
+					wrld.hero_arr[wrld.slot]->set_camp(x, y);
 				}
 				else
-				{ tmpx += 80; }
+				{ wrld.slot = -1; }
 			}
-
 		}
+		else
+		{ wrld.slot = -1; }
 	}
 
-	//map
 }
 
 
 void Game::handle_score_screen()
 {
+
 }
 
 
@@ -157,6 +192,10 @@ void Game::update()
 			screen = 3;
 			wrld.exit_game();
 		}
+	}
+	if (screen == 3)
+	{
+		
 	}
 }
 
@@ -195,17 +234,29 @@ inline void Game::render_game_screen()
 	}
 	// icons...hoe to do dis?
 	if (!wrld.is_playing || wrld.is_paused)
-	{
-		src_rec.x = 120; src_rec.y = 0;
-	}
+	{ src_rec.x = 120; src_rec.y = 0; }
 	else
-	{
-		src_rec.x = 80; src_rec.y = 0;
-	}
+	{ src_rec.x = 80; src_rec.y = 0; }
 	src_rec.w = 40; src_rec.h = 40;
 	des_rec.x = 1170; des_rec.y = 10;
 	des_rec.w = 60; des_rec.h = 60;
 	SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
+
+	if (wrld.slot != -1)
+	{
+		if (wrld.hero_arr[wrld.slot])
+		{
+			// render update button
+			// display stats...icons and text
+		}
+		else
+		{
+			// render hero options to spawn...
+		}
+	}
+
+	// ze texts on hud at top
+
 }
 
 void Game::clean()
@@ -224,6 +275,7 @@ void Game::set_misc_render()
 	{
 		misc_render[0] = false;
 		misc_render[1] = true;
+
 	}
 	else
 	{

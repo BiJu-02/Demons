@@ -7,8 +7,7 @@
 //0 -> start
 //1 -> game
 //2 -> credits
-//3 -> score, name input and save
-//4 -> leaderboard
+//3 -> score, name input and save, leaderboard
 
 //int slot
 //-1 -> none selected
@@ -19,11 +18,12 @@
 //1:hud, 
 //2:character stats, 
 //3:hero types, 
-//4:lvl up/skill?, 
-//5:paused transparent shade, 
-//6:quit confirm, 
-//7:enter name and save, 
-//8:leaderboard
+//4:lvl up, 
+//5: hero selection
+//6:paused transparent shade, 
+//7:quit confirm, 
+//8:enter name and save, 
+//9:leaderboard
 
 
 class Game
@@ -41,6 +41,7 @@ public:
 	int screen;
 	
 	SDL_Texture* icons;
+
 
 	SDL_Texture* sprite_tex[6];		// according to tex_id in Game_Obj
 	SDL_Texture* misc_tex[10];

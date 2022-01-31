@@ -1,9 +1,8 @@
 #pragma once
 
-#include <iostream>
+
 #include <cstdlib>
 #include <ctime>
-#include <list>
 #include <vector>
 #include <algorithm>
 
@@ -37,7 +36,7 @@ public:
 
 	int max_heroes = 6, no_of_heroes;
 	Game_Obj* hero_arr[6];
-	int slot = -1;
+	int slot;
 
 	std::vector<int> enemy_batch;
 	int batch_size, wave_no;
@@ -52,6 +51,8 @@ public:
 	void start_game();
 	void update();
 	void spawn_enemy();
+	void spawn_melee();
+	void spawn_range();
 	void sprite_list_trav();
 	void decr_life(int id);
 	void sprite_create();
