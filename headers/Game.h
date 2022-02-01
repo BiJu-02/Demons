@@ -48,18 +48,11 @@ public:
 	bool misc_render[10];
 
 
-// ####################################
 	std::string curr_plyr_name;
 	std::string ldr_brd_names[5];
 	int ldr_brd_scores[5];
 	bool cur_score_greater;
 	int no_of_plyrs;
-	//wrld.score....DO NOT REWRITE
-
-
-
-
-// #########################################
 
 	World wrld;
 
@@ -81,12 +74,10 @@ public:
 	void render_game_screen();
 	void render_credits_screen();
 
-// ##############################
-	void handle_score_screen();	
-	void render_score_screen();
+	//void handle_score_screen();	
+	//void render_score_screen();
 
 
-// ##############################
 };
 
  

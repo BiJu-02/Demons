@@ -365,8 +365,8 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 	src_y = 80;
 	src_w = src_h = 80;
 		// stats and kill reward, kinematic variables,
-	hp = 100 + tx_id * 20;
-	atk = 10 + tx_id * 20;
+	hp = 100 + tx_id * 30;
+	atk = 10 + tx_id * 30;
 	kill_reward = 10 + tx_id * 10;
 	vxy = 30 - tx_id * 0.1;
 	set_path();

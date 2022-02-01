@@ -212,10 +212,10 @@ void Game::handle_credits_screen(int x, int y)
 }
 
 
-void Game::handle_score_screen()
-{
-
-}
+//void Game::handle_score_screen()
+//{
+//
+//}
 
 
 void Game::update()
@@ -275,8 +275,8 @@ inline void Game::render_game_screen()
 			SDL_RenderCopy(ren, misc_tex[i], NULL, NULL);
 		}
 	}
-	// icons...hoe to do dis?
-	// play/pause butt
+	// icons...how to do dis?
+	// play/pause buttn
 	if (!wrld.is_playing || wrld.is_paused)
 	{ src_rec.x = 120; src_rec.y = 0; }
 	else
@@ -286,7 +286,7 @@ inline void Game::render_game_screen()
 	des_rec.w = 60; des_rec.h = 60;
 	SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 
-	// icons around sluts
+	// icons around slots
 	if (wrld.slot != -1)
 	{	// check if affordable
 		if (wrld.hero_arr[wrld.slot])
@@ -344,6 +344,7 @@ inline void Game::render_game_screen()
 	des_rec.y = 25; des_rec.h = 40;
 	load_text(std::to_string(wrld.lives));
 	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+	SDL_DestroyTexture(text_tex);
 
 	// coins
 	if (wrld.coins < 10)
@@ -356,6 +357,7 @@ inline void Game::render_game_screen()
 	des_rec.h = 40;
 	load_text(std::to_string(wrld.coins));
 	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+	SDL_DestroyTexture(text_tex);
 
 	// score
 	if (wrld.score < 10)
@@ -368,6 +370,7 @@ inline void Game::render_game_screen()
 	des_rec.h = 40;
 	load_text(std::to_string(wrld.score));
 	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+	SDL_DestroyTexture(text_tex);
 
 	//waves
 	if (wrld.wave_no < 10)
@@ -380,6 +383,7 @@ inline void Game::render_game_screen()
 	des_rec.h = 40;
 	load_text(std::to_string(wrld.wave_no));
 	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+	SDL_DestroyTexture(text_tex);
 }
 
 

@@ -92,6 +92,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\include;C:\dev_ig\sdl_proj\pro2\project2\headers;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <SourcePath>C:\dev_ig\sdl_proj\pro2\project2\sources;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -123,12 +126,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
