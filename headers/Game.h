@@ -40,8 +40,8 @@ public:
 	bool is_running;
 	int screen;
 	
-	SDL_Texture* icons;
-
+	SDL_Texture* icons, *credits, *text_tex;
+	SDL_Color text_colr = { 255, 255, 255 };
 
 	SDL_Texture* sprite_tex[6];		// according to tex_id in Game_Obj
 	SDL_Texture* misc_tex[10];
@@ -72,12 +72,14 @@ public:
 	void clean();
 
 	SDL_Texture* load_texture(const char* img_path);
+	void load_text(std::string s);
 
 	void handle_start_screen(int x, int y);		// start and cred button
 	void handle_game_screen(int x, int y);
+	void handle_credits_screen(int x, int y);
 
 	void render_game_screen();
-
+	void render_credits_screen();
 
 // ##############################
 	void handle_score_screen();	

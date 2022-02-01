@@ -92,12 +92,12 @@ void World::spawn_enemy()
 			{
 				// all
 				id = rand() % 100;
-				if (id < 75)
+				if (id < 50)
 				{
 					enemy_batch.push_back(0);
 					tmp_batch -= 1;
 				}
-				else if (id < 95)
+				else if (id < 75)
 				{
 					enemy_batch.push_back(1);
 					tmp_batch -= 10;
@@ -112,7 +112,7 @@ void World::spawn_enemy()
 			{
 				// mid and low
 				id = rand() % 100;
-				if (id < 75)
+				if (id < 60)
 				{
 					enemy_batch.push_back(0);
 					tmp_batch -= 1;
@@ -170,7 +170,10 @@ void World::sprite_list_trav()
 				if (sprite->enemy_passed)
 				{ decr_life(sprite->tex_id); }
 				else		
-				{ coins += sprite->get_reward(); }		// wut abt score..?
+				{ 
+					coins += sprite->get_reward(); 
+					score += coins;
+				}		// wut abt score..?
 				sprite->release_targets();
 			}
 
@@ -245,15 +248,6 @@ void World::decr_life(int id)
 }
 
 
-void World::sprite_create()
-{
-
-}
-
-void World::sprite_destroy()
-{
-
-}
 
 void World::exit_game()
 {

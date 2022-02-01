@@ -80,8 +80,8 @@ void Melee::set_camp(int x, int y)
 void Hero::lvl_up()
 {
 	lvl++;
-	atk += lvl * 10;
-	hp += lvl * 100;
+	atk = lvl * 10;
+	max_hp = lvl * 100;
 }
 
 void Melee::set_target(Game_Obj* t)
@@ -234,7 +234,7 @@ void Melee::update()
 		{
 			to_enemy = true;
 			at_camp = false;
-			set_dest(target.back()->x2d + target.back()->wscrn / 2, target.back()->y2d);
+			set_dest(target.back()->x2d + target.back()->wscrn, target.back()->y2d);
 		}
 		facing = 2;
 	}
@@ -365,8 +365,8 @@ Enemy::Enemy(int x, int y, int z, int w, int h, std::string& nm, int tx_id, int 
 	src_y = 80;
 	src_w = src_h = 80;
 		// stats and kill reward, kinematic variables,
-	hp = 100 + tx_id * 0.5;
-	atk = 10 + tx_id * 10;
+	hp = 100 + tx_id * 20;
+	atk = 10 + tx_id * 20;
 	kill_reward = 10 + tx_id * 10;
 	vxy = 30 - tx_id * 0.1;
 	set_path();
@@ -494,10 +494,6 @@ void Enemy::release_targets()
 	
 }
 
-void Enemy::about_to_fight()
-{
-	//action
-}
 
 Projectile::Projectile(int x, int y, int z, int w, int h, std::string& nm, int tx_id, Game_Obj* shtr) : Game_Obj(x, y, z, w, h, nm, tx_id)
 {

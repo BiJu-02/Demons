@@ -22,7 +22,7 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 
 		if (!TTF_Init())
 		{
-			font = TTF_OpenFont("res/fonts/ARCADECLASSIC.TTF", 12);
+			font = TTF_OpenFont("assets/fonts/ARCADECLASSIC.TTF", 30);
 			std::cout << "font loaded" << std::endl;
 		}
 		else { exit(1); }
@@ -32,15 +32,15 @@ Game::Game(const char* title, int x, int y, int w, int h, int sc, int fps) : wrl
 		// for actual game screen = 0;
 		screen = 0; 
 		set_misc_render();
-		wrld.map_tex = load_texture("assets/images/map.png");
+		wrld.map_tex = load_texture("assets/images/mapwithtexture.png");
 		icons = load_texture("assets/images/icons.png");
+		credits = load_texture("assets/images/credits.png");
 
 		// load all misc_tex
 
-
-		// temporary shit
-		misc_tex[0] = load_texture("assets/images/blank.png");
+		misc_tex[0] = load_texture("assets/images/homescreen.png");
 		misc_tex[1] = load_texture("assets/images/hud.png");
+		misc_tex[2] = load_texture("assets/images/pause.png");
 
 		sprite_tex[0] = load_texture("assets/images/minion.png");
 		sprite_tex[1] = load_texture("assets/images/mid_enemy.png");
@@ -78,8 +78,9 @@ void Game::handle_event()
 	{
 	case SDL_MOUSEBUTTONDOWN:
 		if (screen == 1)
-		{ handle_game_screen(event.button.x, event.button.y); }
-		
+		{ handle_game_screen(event.button.x, event.button.y);	}
+		else if (screen == 2)
+		{ handle_credits_screen(event.button.x, event.button.y); }
 		else
 		{ handle_start_screen(event.button.x, event.button.y); }
 		break;
@@ -96,15 +97,15 @@ void Game::handle_event()
 void Game::handle_start_screen(int x, int y)
 {
 	// for start butt
-	if (10 < x && x < 1250 && 10 < y && y < 700)
+	if (590 < x && x < 730 && 440 < y && y < 512)
 	{
 		screen = 1; 
 		wrld.start_game(); 
 		set_misc_render();
 	}
 	// for credits butt
-	//if (lx < x && x < ux && ly < y && y < uy)
-	//{ screen = 2; }
+	if (590 < x && x < 730 && 560 < y && y < 632)
+	{ screen = 2; }
 }
 
 void Game::handle_game_screen(int x, int y)
@@ -114,11 +115,22 @@ void Game::handle_game_screen(int x, int y)
 	if (1170 < x && x < 1230 && 10 < y && y < 70)		// pause / play
 	{
 		if (!wrld.is_playing)
-		{ wrld.is_playing = true; std::cout << "playing" << std::endl; }
+		{ 
+			wrld.is_playing = true; 
+			std::cout << "playing" << std::endl; 
+		}
 		else if (wrld.is_paused)
-		{ wrld.is_paused = false; std::cout << "resumed" << std::endl; }
+		{ 
+			wrld.is_paused = false; 
+			misc_render[2] = false;
+			std::cout << "resumed" << std::endl; 
+		}
 		else
-		{ wrld.is_paused = true; std::cout << "paused" << std::endl; }
+		{ 
+			wrld.is_paused = true; 
+			misc_render[2] = true;
+			std::cout << "paused" << std::endl; 
+		}
 	}
 	//hero slot
 	else if (!wrld.is_paused)
@@ -148,7 +160,11 @@ void Game::handle_game_screen(int x, int y)
 					if (wrld.hero_arr[wrld.slot])		// check for coins too
 					{
 						// upgrade
-
+						if (wrld.coins > wrld.lvl_up_cost * wrld.hero_arr[wrld.slot]->get_lvl())
+						{
+							wrld.coins -= wrld.lvl_up_cost * wrld.hero_arr[wrld.slot]->get_lvl();
+							wrld.hero_arr[wrld.slot]->lvl_up();
+						}
 					}
 					else
 					{
@@ -187,6 +203,14 @@ void Game::handle_game_screen(int x, int y)
 
 }
 
+void Game::handle_credits_screen(int x, int y)
+{
+	if (1160 < x && x < 1240 && 600 < y && y < 680)
+	{
+		screen = 0;
+	}
+}
+
 
 void Game::handle_score_screen()
 {
@@ -216,7 +240,13 @@ void Game::render()
 {
 	SDL_RenderClear(ren);
 	if (screen == 1)
-	{ render_game_screen(); }
+	{
+		render_game_screen();
+	}
+	else if (screen == 2)
+	{
+		render_credits_screen();
+	}
 	else
 	{ SDL_RenderCopy(ren, misc_tex[0], NULL, NULL); }
 	
@@ -301,11 +331,68 @@ inline void Game::render_game_screen()
 			src_rec.w = 40; src_rec.h = 40;
 			des_rec.x = tmpx; des_rec.y = 650;
 			des_rec.w = 60; des_rec.h = 60;
+			SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 		}
 		tmpx += 80;
 	}
 	// ze texts on hud at top
+	//lives
+	if (wrld.lives < 10)
+	{ des_rec.x = 125; des_rec.w = 30; }
+	else
+	{ des_rec.x = 85; des_rec.w = 70; }
+	des_rec.y = 25; des_rec.h = 40;
+	load_text(std::to_string(wrld.lives));
+	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
 
+	// coins
+	if (wrld.coins < 10)
+	{ des_rec.x = 320; des_rec.w = 30; }
+	else if (wrld.coins < 100)
+	{ des_rec.x = 280; des_rec.w = 70; }
+	else
+	{ des_rec.x = 240; des_rec.w = 110; }
+	des_rec.y = 25;
+	des_rec.h = 40;
+	load_text(std::to_string(wrld.coins));
+	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+
+	// score
+	if (wrld.score < 10)
+	{ des_rec.x = 640; des_rec.w = 30; }
+	else if (wrld.score < 100)
+	{ des_rec.x = 600; des_rec.w = 70; }
+	else
+	{ des_rec.x = 560; des_rec.w = 110; }
+	des_rec.y = 25;
+	des_rec.h = 40;
+	load_text(std::to_string(wrld.score));
+	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+
+	//waves
+	if (wrld.wave_no < 10)
+	{ des_rec.x = 960; des_rec.w = 30; }
+	else if (wrld.wave_no < 100)
+	{ des_rec.x = 920; des_rec.w = 70; }
+	else
+	{ des_rec.x = 880; des_rec.w = 110; }
+	des_rec.y = 25;
+	des_rec.h = 40;
+	load_text(std::to_string(wrld.wave_no));
+	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
+}
+
+
+//start(1160, 600)
+//end(1240, 680
+void Game::render_credits_screen()
+{
+	SDL_RenderCopy(ren, credits, NULL, NULL);
+	src_rec.x = 0; src_rec.y = 120;
+	src_rec.w = 40; src_rec.h = 40;
+	des_rec.x = 1160; des_rec.y = 600;
+	des_rec.w = 80; des_rec.h = 80;
+	SDL_RenderCopy(ren, icons, &src_rec, &des_rec);
 }
 
 void Game::clean()
@@ -341,4 +428,11 @@ SDL_Texture* Game::load_texture(const char* img_path)
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, temp_surf);
 	SDL_FreeSurface(temp_surf);
 	return tex;
+}
+
+void Game::load_text(std::string s)
+{
+	SDL_Surface* surface_message = TTF_RenderText_Blended(font, s.c_str(), text_colr);
+	text_tex = SDL_CreateTextureFromSurface(ren, surface_message);
+	SDL_FreeSurface(surface_message);
 }

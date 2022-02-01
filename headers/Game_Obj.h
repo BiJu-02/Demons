@@ -100,7 +100,6 @@ public:
 	void set_range_target(Game_Obj* t);
 	void remove_target(Game_Obj* t);
 	void release_targets();			// can have multiple targets
-	void about_to_fight();
 };
 
 class Hero : public Character

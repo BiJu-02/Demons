@@ -51,7 +51,5 @@ public:
 	void spawn_range();
 	void sprite_list_trav();
 	void decr_life(int id);
-	void sprite_create();
-	void sprite_destroy();
 	void exit_game();
 };
