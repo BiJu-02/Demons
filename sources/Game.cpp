@@ -384,6 +384,9 @@ inline void Game::render_game_screen()
 	load_text(std::to_string(wrld.wave_no));
 	SDL_RenderCopy(ren, text_tex, NULL, &des_rec);
 	SDL_DestroyTexture(text_tex);
+
+	// hero stats
+
 }
 
 
