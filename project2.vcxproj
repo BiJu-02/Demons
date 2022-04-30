@@ -86,15 +86,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <SourcePath>C:\dev_ig\sdl_proj\pro2\project2\sources;$(SourcePath)</SourcePath>
-    <IncludePath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\include;C:\dev_ig\sdl_proj\pro2\project2\headers;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)sources;$(SourcePath)</SourcePath>
+    <IncludePath>$(SolutionDir)sdl_stuff\SDL2_ttf\include;$(SolutionDir)sdl_stuff\SDL2_image\include;$(SolutionDir)sdl_stuff\SDL2\include;$(SolutionDir)headers;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)sdl_stuff\SDL2_ttf\lib\x86;$(SolutionDir)sdl_stuff\SDL2_image\lib\x86;$(SolutionDir)sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\include;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\include;C:\dev_ig\sdl_proj\pro2\project2\headers;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_ttf\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2_image\lib\x86;C:\dev_ig\sdl_proj\pro2\project2\sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\dev_ig\sdl_proj\pro2\project2\sources;$(SourcePath)</SourcePath>
+    <IncludePath>$(SolutionDir)sdl_stuff\SDL2_ttf\include;$(SolutionDir)sdl_stuff\SDL2_image\include;$(SolutionDir)sdl_stuff\SDL2\include;$(SolutionDir)headers;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)sdl_stuff\SDL2_ttf\lib\x86;$(SolutionDir)sdl_stuff\SDL2_image\lib\x86;$(SolutionDir)sdl_stuff\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)sources;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
