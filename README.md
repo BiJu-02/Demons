@@ -1,5 +1,5 @@
 # Demons
-###A strategy defense game###
+### A strategy defense game
 - Strategically eploy your heores on the map using coins
 - Do not let the horde of enemies pass the ending point in each wave
 - Depending on the enemy it will cost you a number of lives, you get max 20
