@@ -7,3 +7,5 @@
 - The more enemies you kill the more coins you get to upgrade your hero or deploy more of them, you can deploy max 6
 - You get 2 types of heroes, melee type and ranged type
 - There are 3 types of enemies as well
+
+To play the game unzip the demons.zip file and run the exe on windows machine
